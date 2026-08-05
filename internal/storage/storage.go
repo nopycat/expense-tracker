@@ -3,6 +3,7 @@ package storage
 import (
 	"errors"
 	"expensetracker/internal/expense"
+	"sort"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func (s *Storage) Add(description string, amount float64, time time.Time) int {
 	s.nextID++
 	id := s.nextID
 	s.expenses[id] = expense.Expense{
+		ID:          id,
 		Description: description,
 		Amount:      amount,
 		Date:        time,
@@ -54,4 +56,15 @@ func (s *Storage) Delete(id int) error {
 		return nil
 	}
 	return errors.New("DeleteExpenseNotFound")
+}
+
+func (s *Storage) List() []expense.Expense {
+	expenseList := make([]expense.Expense, 0, len(s.expenses))
+	for _, v := range s.expenses {
+		expenseList = append(expenseList, v)
+	}
+	sort.Slice(expenseList, func(i, j int) bool {
+		return expenseList[i].ID < expenseList[j].ID
+	})
+	return expenseList
 }
