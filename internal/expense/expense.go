@@ -3,8 +3,7 @@ package expense
 import "time"
 
 type Expense struct {
-	ID          int
-	Date        time.Duration
+	Date        time.Time
 	Description string
-	Amount      int
+	Amount      float64
 }
