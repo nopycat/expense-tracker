@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"expensetracker/internal/expense"
 	"time"
 )
@@ -26,4 +27,22 @@ func (s *Storage) Add(description string, amount float64, time time.Time) int {
 		Date:        time,
 	}
 	return id
+}
+
+/*TODO
+func (s *Storage) Update(id int) error {
+	if _, ok := s.expenses[id]; ok {
+		delete(s.expenses, id)
+		return nil
+	}
+	return errors.New("expense not found")
+}
+*/
+
+func (s *Storage) Delete(id int) error {
+	if _, ok := s.expenses[id]; ok {
+		delete(s.expenses, id)
+		return nil
+	}
+	return errors.New("expense not found")
 }
