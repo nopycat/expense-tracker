@@ -29,20 +29,29 @@ func (s *Storage) Add(description string, amount float64, time time.Time) int {
 	return id
 }
 
-/*TODO
-func (s *Storage) Update(id int) error {
-	if _, ok := s.expenses[id]; ok {
-		delete(s.expenses, id)
-		return nil
+func (s *Storage) Update(id int, data expense.UpdateData) (expense.Expense, error) {
+	existing, ok := s.expenses[id]
+	if !ok {
+		return expense.Expense{}, errors.New("UpdateExpenseNotFound")
 	}
-	return errors.New("expense not found")
+
+	if data.Description != nil {
+		existing.Description = *data.Description
+	}
+	if data.Amount != nil {
+		existing.Amount = *data.Amount
+	}
+	if data.Date != nil {
+		existing.Date = *data.Date
+	}
+	s.expenses[id] = existing
+	return existing, nil
 }
-*/
 
 func (s *Storage) Delete(id int) error {
 	if _, ok := s.expenses[id]; ok {
 		delete(s.expenses, id)
 		return nil
 	}
-	return errors.New("expense not found")
+	return errors.New("DeleteExpenseNotFound")
 }

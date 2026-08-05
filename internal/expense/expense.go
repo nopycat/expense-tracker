@@ -7,3 +7,9 @@ type Expense struct {
 	Description string
 	Amount      float64
 }
+
+type UpdateData struct {
+	Description *string
+	Amount      *float64
+	Date        *time.Time
+}
