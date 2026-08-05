@@ -1,7 +1,8 @@
 package main
 
-import "fmt"
+import "expensetracker/internal/storage"
 
 func main() {
-	fmt.Println("Hello world")
+	storage := storage.New()
+	_ = storage
 }
