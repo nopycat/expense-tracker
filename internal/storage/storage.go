@@ -68,3 +68,22 @@ func (s *Storage) List() []expense.Expense {
 	})
 	return expenseList
 }
+
+func (s *Storage) Summary() float64 {
+	sum := 0.0
+	for _, v := range s.expenses {
+		sum += v.Amount
+	}
+	return sum
+}
+
+func (s *Storage) SummaryByMonth(month int) float64 {
+	sum := 0.0
+	currYear := time.Now().Year()
+	for _, v := range s.expenses {
+		if int(v.Date.Month()) == month && v.Date.Year() == currYear {
+			sum += v.Amount
+		}
+	}
+	return sum
+}
