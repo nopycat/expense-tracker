@@ -18,6 +18,10 @@ You can add, update, delete, list, and summarize expenses directly from your ter
 
 	rootCmd.AddCommand(
 		NewAddCmd(storage),
+		NewDeleteCmd(storage),
+		NewListCmd(storage),
+		NewSummaryCmd(storage),
+		NewUpdateCmd(storage),
 	)
 
 	return rootCmd

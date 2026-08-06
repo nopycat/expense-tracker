@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -9,7 +10,7 @@ import (
 	"expensetracker/internal/storage"
 )
 
-func NewAddCmd(storage *storage.Storage) *cobra.Command {
+func NewAddCmd(store *storage.Storage) *cobra.Command {
 	var description string
 	var amount float64
 
@@ -18,8 +19,8 @@ func NewAddCmd(storage *storage.Storage) *cobra.Command {
 		Short: "Add a new expense",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			if description == "" {
-				fmt.Println("description is required")
+			if strings.TrimSpace(description) == "" {
+				fmt.Println("description cannot be empty")
 				return
 			}
 
@@ -28,7 +29,7 @@ func NewAddCmd(storage *storage.Storage) *cobra.Command {
 				return
 			}
 
-			id := storage.Add(description, amount, time.Now())
+			id := store.Add(description, amount, time.Now())
 
 			fmt.Printf("Expense added successfully (ID: %d)\n", id)
 		},

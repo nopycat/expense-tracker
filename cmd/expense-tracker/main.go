@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	storage := storage.New()
+	store := storage.New()
 
-	rootCmd := cli.NewRootCmd(storage)
+	rootCmd := cli.NewRootCmd(store)
 
 	if err := rootCmd.Execute(); err != nil {
 		return

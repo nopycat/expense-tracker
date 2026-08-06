@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewDeleteCmd(storage *storage.Storage) *cobra.Command {
+func NewDeleteCmd(store *storage.Storage) *cobra.Command {
 	var id int
 
 	cmd := &cobra.Command{
@@ -19,9 +19,9 @@ You need to provide the ID of the expense you want to delete.
 Example:
   expense-tracker delete --id 2`,
 		Run: func(cmd *cobra.Command, args []string) {
-			err := storage.Delete(id)
+			err := store.Delete(id)
 			if err != nil {
-				fmt.Println("id not found")
+				fmt.Println("id not found for delete")
 				return
 			}
 			fmt.Println("Expense deleted successfully")
