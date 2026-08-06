@@ -1,11 +1,16 @@
 package main
 
 import (
+	"expensetracker/internal/cli"
 	"expensetracker/internal/storage"
 )
 
 func main() {
 	storage := storage.New()
-	_ = storage
 
+	rootCmd := cli.NewRootCmd(storage)
+
+	if err := rootCmd.Execute(); err != nil {
+		return
+	}
 }
