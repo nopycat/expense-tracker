@@ -16,6 +16,7 @@
 * Подсчёт расходов за определённый месяц
 * Сохранение данных в JSON
 * Загрузка данных из JSON при запуске
+* Валидация пользовательского ввода
 
 ## Технологии
 
@@ -24,55 +25,38 @@
 * JSON
 * `encoding/json`
 
-## Установка
+## Быстрый запуск
 
-Для запуска из исходного кода требуется Go.
+Если в проекте уже есть готовый файл:
 
-Клонируйте репозиторий и перейдите в директорию проекта:
-
-```bash
-git clone <repository-url>
-cd expenseTracker
+```text
+expense-tracker.exe
 ```
 
-Установите зависимости:
+то устанавливать Go и зависимости не требуется.
 
-```bash
-go mod download
-```
-
-Запустите приложение:
-
-```bash
-go run ./cmd/expense-tracker
-```
-
-## Сборка
-
-Для создания исполняемого файла:
-
-```bash
-go build -o expense-tracker ./cmd/expense-tracker
-```
-
-После этого программу можно запускать напрямую:
-
-```bash
-./expense-tracker
-```
-
-В Windows:
+Запустите PowerShell или командную строку в директории с `.exe`:
 
 ```powershell
-.\expense-tracker.exe
+.\expense-tracker.exe list
 ```
+
+При первом запуске рядом с программой будет создан файл:
+
+```text
+data.json
+```
+
+В нём хранятся данные расходов.
+
+> Если вы хотите сохранить существующие данные при переносе программы на другой компьютер, перенесите вместе с `.exe` также файл `data.json`.
 
 ## Использование
 
 ### Добавление расхода
 
-```bash
-expense-tracker add --description "Lunch" --amount 20
+```powershell
+.\expense-tracker.exe add --description "Lunch" --amount 20
 ```
 
 Пример результата:
@@ -83,8 +67,8 @@ Expense added successfully with ID: 1
 
 ### Просмотр расходов
 
-```bash
-expense-tracker list
+```powershell
+.\expense-tracker.exe list
 ```
 
 Пример:
@@ -97,36 +81,40 @@ ID  Date        Description  Amount
 
 ### Изменение расхода
 
-Можно изменить описание, сумму или дату:
+Изменить описание:
 
-```bash
-expense-tracker update --id 1 --description "Dinner"
+```powershell
+.\expense-tracker.exe update --id 1 --description "Dinner"
 ```
 
-```bash
-expense-tracker update --id 1 --amount 25
+Изменить сумму:
+
+```powershell
+.\expense-tracker.exe update --id 1 --amount 25
 ```
 
-```bash
-expense-tracker update --id 1 --date 2026-08-10
+Изменить дату:
+
+```powershell
+.\expense-tracker.exe update --id 1 --date 2026-08-10
 ```
 
 Можно изменить несколько полей одновременно:
 
-```bash
-expense-tracker update --id 1 --description "Dinner" --amount 25
+```powershell
+.\expense-tracker.exe update --id 1 --description "Dinner" --amount 25
 ```
 
 ### Удаление расхода
 
-```bash
-expense-tracker delete --id 1
+```powershell
+.\expense-tracker.exe delete --id 1
 ```
 
 ### Общая сумма расходов
 
-```bash
-expense-tracker summary
+```powershell
+.\expense-tracker.exe summary
 ```
 
 Пример:
@@ -135,10 +123,10 @@ expense-tracker summary
 Total expenses: $48.50
 ```
 
-### Сумма за месяц
+### Сумма расходов за месяц
 
-```bash
-expense-tracker summary --month 8
+```powershell
+.\expense-tracker.exe summary --month 8
 ```
 
 Пример:
@@ -164,18 +152,57 @@ data.json
 ```text
 data.json
     ↓
-   Load
+  Load()
     ↓
  Storage
     ↓
-   CLI
+  Cobra
     ↓
  Storage
     ↓
-   Save
+  Save()
     ↓
 data.json
 ```
+
+## Установка и запуск из исходного кода
+
+Если вы хотите запустить проект из исходников, необходимо установить Go.
+
+Клонируйте репозиторий:
+
+```bash
+git clone <repository-url>
+cd expenseTracker
+```
+
+Установите зависимости:
+
+```bash
+go mod download
+```
+
+Запустите приложение:
+
+```bash
+go run ./cmd/expense-tracker
+```
+
+## Сборка
+
+Для создания исполняемого файла:
+
+```bash
+go build -o expense-tracker.exe ./cmd/expense-tracker
+```
+
+После сборки программу можно запускать напрямую:
+
+```powershell
+.\expense-tracker.exe list
+```
+
+Готовый `.exe` является самостоятельным исполняемым файлом — для его запуска не требуется устанавливать Go или зависимости проекта.
 
 ## Архитектура
 
@@ -183,15 +210,17 @@ data.json
 
 ### `expense`
 
-Содержит модели данных:
+Содержит основные структуры данных:
 
-* `Expense`
-* `UpdateData`
-* `FileData`
+* `Expense` — расход;
+* `UpdateData` — данные для обновления расхода;
+* `FileData` — структура данных для хранения в JSON.
 
 ### `storage`
 
-Отвечает за работу с расходами в памяти:
+Отвечает за работу с расходами в памяти.
+
+Основные операции:
 
 * `Add`
 * `Update`
@@ -200,7 +229,7 @@ data.json
 * `Summary`
 * `SummaryByMonth`
 
-Для хранения расходов используется:
+Расходы хранятся в:
 
 ```go
 map[int]expense.Expense
@@ -210,7 +239,9 @@ map[int]expense.Expense
 
 Отвечает за взаимодействие с пользователем через командную строку.
 
-Для каждой команды используется отдельный Cobra command:
+Используется библиотека Cobra.
+
+Основные команды:
 
 ```text
 add
@@ -220,17 +251,35 @@ summary
 update
 ```
 
+CLI отвечает за:
+
+* получение аргументов и флагов;
+* валидацию пользовательского ввода;
+* вызов методов `Storage`;
+* вывод результата пользователю.
+
+### `repository/json`
+
+Отвечает за работу с JSON-файлом:
+
+```text
+Load()
+Save()
+```
+
+Этот слой преобразует данные между JSON и `Storage`.
+
 ## Цель проекта
 
 Проект создан для практики разработки CLI-приложений на Go и изучения:
 
-* работы с пакетами и структурой проекта;
-* методов и структур Go;
+* структур и методов Go;
 * работы с `map`;
-* обработки ошибок;
 * указателей;
-* JSON;
+* обработки ошибок;
 * работы с файлами;
+* JSON;
 * Cobra;
-* разделения ответственности между слоями приложения.
+* валидации пользовательского ввода;
+* разделения ответственности между компонентами приложения.
 
