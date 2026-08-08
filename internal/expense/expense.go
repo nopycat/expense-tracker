@@ -1,6 +1,8 @@
 package expense
 
-import "time"
+import (
+	"time"
+)
 
 type Expense struct {
 	ID          int
@@ -13,4 +15,9 @@ type UpdateData struct {
 	Description *string
 	Amount      *float64
 	Date        *time.Time
+}
+
+type FileData struct {
+	NextID   int       `json:"next_id"`
+	Expenses []Expense `json:"expenses"`
 }

@@ -19,6 +19,24 @@ func New() *Storage {
 	}
 }
 
+func NewFromData(data expense.FileData) *Storage {
+	exs := make(map[int]expense.Expense, len(data.Expenses))
+	for i := 0; i < len(data.Expenses); i++ {
+		exs[data.Expenses[i].ID] = data.Expenses[i]
+	}
+	return &Storage{
+		expenses: exs,
+		nextID:   data.NextID,
+	}
+}
+
+func (s *Storage) Export() expense.FileData {
+	return expense.FileData{
+		NextID:   s.nextID,
+		Expenses: s.List(),
+	}
+}
+
 func (s *Storage) Add(description string, amount float64, time time.Time) int {
 	s.nextID++
 	id := s.nextID

@@ -20,6 +20,11 @@ Shows ID, date, description and amount for each expense.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			expenseList := store.List()
 
+			if len(expenseList) == 0 {
+				fmt.Println("There are no expenses yet")
+				return
+			}
+
 			w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
 
 			fmt.Fprintln(w, "ID\tDate\tDescription\tAmount")
