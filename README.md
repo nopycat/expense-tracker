@@ -6,7 +6,7 @@
 
 Данные сохраняются в JSON-файл и восстанавливаются при следующем запуске программы.
 
-Он создан по мотивам проекта Expense Tracker, представленного в Backend Roadmap от roadmap.sh.
+Project Reference: https://roadmap.sh/projects/expense-tracker
 
 ## Возможности
 
